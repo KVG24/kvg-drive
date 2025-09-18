@@ -1,0 +1,36 @@
+{
+    "name": "kvg-drive",
+    "version": "1.0.0",
+    "description": "This project was created to consolidate knowledge about Prisma ORM",
+    "main": "index.js",
+    "scripts": {
+        "dev": "node app.js --watch",
+        "start": "node app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KVG24/kvg-drive.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/KVG24/kvg-drive/issues"
+    },
+    "homepage": "https://github.com/KVG24/kvg-drive#readme",
+    "dependencies": {
+        "@prisma/client": "^6.16.2",
+        "@quixo3/prisma-session-store": "^3.1.13",
+        "bcryptjs": "^3.0.2",
+        "dotenv": "^17.2.2",
+        "ejs": "^3.1.10",
+        "express": "^5.1.0",
+        "express-session": "^1.18.2",
+        "express-validator": "^7.2.1",
+        "passport": "^0.7.0",
+        "passport-local": "^1.0.0"
+    },
+    "devDependencies": {
+        "prisma": "^6.16.2"
+    }
+}
