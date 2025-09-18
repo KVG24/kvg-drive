@@ -1,0 +1,129 @@
+:root {
+    --accent: #ffc300;
+    --secondary: #ffe97c;
+    --light-bg: #1d4d7a;
+    --dark-bg: #001d3d;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--dark-bg);
+    color: #dfdfdf;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.title {
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.welcome-text {
+    font-size: 1.3rem;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1,
+h2 {
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    margin-top: 1rem;
+}
+
+ul {
+    padding: 0;
+}
+
+li {
+    margin-bottom: 1rem;
+    list-style: none;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+.links {
+    display: flex;
+    gap: 1rem;
+}
+
+.sign-up-link,
+.log-in-link,
+.log-out-link,
+.submit-btn {
+    text-decoration: none;
+    padding: 1rem;
+    color: black;
+    background-color: var(--accent);
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    font-weight: 700;
+}
+
+.log-out-link {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+}
+
+.sign-up-link:hover,
+.log-in-link:hover,
+.log-out-link:hover,
+.submit-btn:hover {
+    background-color: var(--secondary);
+}
+
+.existing-link {
+    color: var(--accent);
+}
+
+.welcome-back-text {
+    position: absolute;
+    top: 1.5rem;
+    left: 10rem;
+}
+
+.sign-up-form,
+.log-in-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+input {
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--light-bg);
+    width: 270px;
+    color: #dfdfdf;
+}
+
+.log-in-error,
+.errors {
+    font-size: 1rem;
+    color: var(--secondary);
+}

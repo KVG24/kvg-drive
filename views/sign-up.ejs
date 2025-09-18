@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/style.css" />
+        <title>ClubFeed: Sign-Up</title>
+    </head>
+    <body style="justify-content: center">
+        <h1>Sign Up</h1>
+        <% if (errors) { %>
+        <div class="errors">
+            <ul>
+                <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+                <%});%>
+            </ul>
+        </div>
+        <% } %>
+        <form
+            class="sign-up-form"
+            class="sign-up-form"
+            action="/sign-up"
+            method="POST"
+        >
+            <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder="Username"
+                value="<%= inputValues.username %>"
+                required
+            />
+            <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Email"
+                value="<%= inputValues.email %>"
+                required
+            />
+            <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Password"
+                required
+            />
+            <input
+                type="password"
+                name="passwordConfirmation"
+                id="passwordConfirmation"
+                placeholder="Confirm Password"
+                required
+            />
+            <button class="submit-btn" type="submit">Sign Up</button>
+            <p>
+                Existing user?
+                <a class="existing-link" href="/log-in">Log In</a>
+            </p>
+        </form>
+    </body>
+</html>

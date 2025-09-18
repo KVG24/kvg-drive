@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/style.css" />
+        <title>ClubFeed: Sign-Up</title>
+    </head>
+    <body style="justify-content: center">
+        <h1>Log In</h1>
+        <% if (error) { %>
+        <p class="log-in-error"><%= error %></p>
+        <% } %>
+        <form class="log-in-form" action="/log-in" method="POST">
+            <input
+                id="username"
+                name="username"
+                placeholder="Username"
+                type="text"
+                required
+            />
+            <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Password"
+                required
+            />
+            <button class="submit-btn" type="submit">Log In</button>
+            <p>
+                Not registered?
+                <a class="existing-link" href="/sign-up">Sign Up</a>
+            </p>
+        </form>
+    </body>
+</html>
