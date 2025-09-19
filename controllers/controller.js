@@ -25,8 +25,9 @@ function renderLogIn(req, res) {
     res.render("log-in", { error: null });
 }
 
-function renderDrive(req, res) {
-    res.render("drive", { user: req.user });
+async function renderDrive(req, res) {
+    const files = await db.getFiles(`${req.user.username}-main`);
+    res.render("drive", { user: req.user, files });
 }
 
 async function registerUser(req, res, next) {
@@ -87,7 +88,28 @@ function logOut(req, res, next) {
     });
 }
 
-function uploadFile(req, res, next) {}
+async function uploadFile(req, res, next) {
+    try {
+        if (!req.file) {
+            return res.status(400).send("No file uploaded.");
+        }
+
+        const folder = await db.getFolder(
+            req.user.id,
+            null,
+            `${req.user.username}-main`
+        );
+
+        if (!folder) {
+            return res.status(404).send("Main folder not found for user.");
+        }
+
+        await db.uploadFile(req.file.originalname, folder.id);
+        res.redirect("/drive");
+    } catch (err) {
+        next(err);
+    }
+}
 
 module.exports = {
     renderIndex,

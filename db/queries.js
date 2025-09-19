@@ -25,6 +25,26 @@ async function getLatestUserId() {
     return user?.id;
 }
 
+async function getFolder(ownerId, parentId, name) {
+    return await prisma.folder.findFirst({
+        where: {
+            ownerId,
+            parentId,
+            name,
+        },
+    });
+}
+
+async function getFiles(folderName) {
+    return await prisma.file.findMany({
+        where: {
+            folder: {
+                name: folderName,
+            },
+        },
+    });
+}
+
 async function registerUser(email, username, password) {
     await prisma.user.create({
         data: {
@@ -41,9 +61,21 @@ async function registerUser(email, username, password) {
     });
 }
 
+async function uploadFile(name, folderId) {
+    await prisma.file.create({
+        data: {
+            name,
+            folderId,
+        },
+    });
+}
+
 module.exports = {
     getUser,
     getUserById,
     getLatestUserId,
+    getFolder,
+    getFiles,
     registerUser,
+    uploadFile,
 };
