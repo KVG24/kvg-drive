@@ -7,7 +7,6 @@
         <title><%= user.username %> drive</title>
     </head>
     <body>
-        <h1><%= user.username %> drive</h1>
         <a class="log-out-link" href="/log-out">Log Out</a>
         <form
             action="/upload"
@@ -18,5 +17,6 @@
             <input type="file" name="file" />
             <button class="submit-btn" type="submit">Upload</button>
         </form>
+        <h1><%= user.username %> drive</h1>
     </body>
 </html>

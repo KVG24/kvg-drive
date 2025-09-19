@@ -23,11 +23,14 @@ model User {
 }
 
 model Folder {
-  id      Int    @id @default(autoincrement())
-  name    String
-  owner   User   @relation(fields: [ownerId], references: [id])
-  ownerId Int
-  File    File[]
+  id       Int      @id @default(autoincrement())
+  name     String
+  owner    User     @relation(fields: [ownerId], references: [id])
+  ownerId  Int
+  parentId Int?
+  parent   Folder?  @relation("FolderHierarchy", fields: [parentId], references: [id])
+  children Folder[] @relation("FolderHierarchy")
+  File     File[]
 }
 
 model File {

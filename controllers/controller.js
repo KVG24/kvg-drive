@@ -4,7 +4,11 @@ const passport = require("passport");
 const db = require("../db/queries");
 
 async function renderIndex(req, res) {
-    res.render("index");
+    if (req.user) {
+        res.redirect("/drive");
+    } else {
+        res.render("index");
+    }
 }
 
 function renderSignUp(req, res) {
