@@ -83,6 +83,8 @@ function logOut(req, res, next) {
     });
 }
 
+function uploadFile(req, res, next) {}
+
 module.exports = {
     renderIndex,
     renderSignUp,
@@ -91,4 +93,5 @@ module.exports = {
     registerUser,
     logIn,
     logOut,
+    uploadFile,
 };

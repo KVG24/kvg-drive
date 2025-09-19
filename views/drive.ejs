@@ -8,6 +8,15 @@
     </head>
     <body>
         <h1><%= user.username %> drive</h1>
-        <a href="/log-out">Log Out</a>
+        <a class="log-out-link" href="/log-out">Log Out</a>
+        <form
+            action="/upload"
+            class="upload-file-form"
+            method="post"
+            enctype="multipart/form-data"
+        >
+            <input type="file" name="file" />
+            <button class="submit-btn" type="submit">Upload</button>
+        </form>
     </body>
 </html>

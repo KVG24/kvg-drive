@@ -22,20 +22,6 @@ body {
     gap: 1rem;
 }
 
-.title {
-    padding: 1rem;
-    border-radius: 5px;
-}
-
-.welcome-text {
-    font-size: 1.3rem;
-    max-width: 800px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 h1,
 h2 {
     padding: 0;
@@ -58,6 +44,38 @@ li {
 p {
     padding: 0;
     margin: 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+input {
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--light-bg);
+    width: 270px;
+    color: #dfdfdf;
+}
+
+.title {
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.welcome-text {
+    font-size: 1.3rem;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .links {
@@ -103,27 +121,14 @@ p {
     left: 10rem;
 }
 
-.sign-up-form,
-.log-in-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-}
-
-input {
-    padding: 1rem;
-    font-size: 1rem;
-    border-radius: 5px;
-    border: none;
-    background-color: var(--light-bg);
-    width: 270px;
-    color: #dfdfdf;
-}
-
 .log-in-error,
 .errors {
     font-size: 1rem;
     color: var(--secondary);
+}
+
+.upload-file-form {
+    border: 1px solid var(--accent);
+    border-radius: 5px;
+    padding: 1rem;
 }

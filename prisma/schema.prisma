@@ -15,10 +15,26 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  username String @unique
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  username String   @unique
   password String
+  Folder   Folder[]
+}
+
+model Folder {
+  id      Int    @id @default(autoincrement())
+  name    String
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId Int
+  File    File[]
+}
+
+model File {
+  id       Int    @id @default(autoincrement())
+  name     String
+  folder   Folder @relation(fields: [folderId], references: [id])
+  folderId Int
 }
 
 model Session {
