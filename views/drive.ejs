@@ -14,16 +14,31 @@
             method="post"
             enctype="multipart/form-data"
         >
-            <input type="file" name="file" />
-            <button class="submit-btn" type="submit">Upload</button>
+            <input
+                type="file"
+                name="files"
+                class="upload-file-input"
+                multiple
+            />
+            <button class="submit-btn" type="submit" disabled>Upload</button>
         </form>
         <h1><%= user.username %> drive</h1>
         <div class="files-container">
             <% if (files) {%> <% files.forEach((file) => { %>
             <div class="file">
-                <p><%= file.name %></p>
+                <div><%= file.name %></div>
+                <div><%= file.size %> KB</div>
+                <div><%= file.uploaded %></div>
             </div>
             <% }) %> <% } %>
         </div>
     </body>
+    <script>
+        const input = document.querySelector(".upload-file-input");
+        const btn = document.querySelector(".submit-btn");
+
+        input.addEventListener("change", () => {
+            btn.disabled = input.files.length === 0;
+        });
+    </script>
 </html>

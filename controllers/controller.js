@@ -27,6 +27,18 @@ function renderLogIn(req, res) {
 
 async function renderDrive(req, res) {
     const files = await db.getFiles(`${req.user.username}-main`);
+
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    for (const file of files) {
+        const formatted = new Intl.DateTimeFormat("default", {
+            timeZone: userTimeZone,
+            dateStyle: "medium",
+            timeStyle: "short",
+        }).format(file.uploadTime);
+
+        file.uploaded = formatted;
+        file.size = file.size / 1000;
+    }
     res.render("drive", { user: req.user, files });
 }
 
@@ -90,7 +102,7 @@ function logOut(req, res, next) {
 
 async function uploadFile(req, res, next) {
     try {
-        if (!req.file) {
+        if (!req.files) {
             return res.status(400).send("No file uploaded.");
         }
 
@@ -104,7 +116,10 @@ async function uploadFile(req, res, next) {
             return res.status(404).send("Main folder not found for user.");
         }
 
-        await db.uploadFile(req.file.originalname, folder.id);
+        for (const file of req.files) {
+            await db.uploadFile(file.originalname, folder.id, file.size);
+        }
+
         res.redirect("/drive");
     } catch (err) {
         next(err);

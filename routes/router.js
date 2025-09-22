@@ -13,6 +13,6 @@ router.get("/log-in", controller.renderLogIn);
 router.post("/log-in", controller.logIn);
 router.get("/log-out", controller.logOut);
 router.get("/drive", controller.renderDrive);
-router.post("/upload", upload.single("file"), controller.uploadFile);
+router.post("/upload", upload.array("files"), controller.uploadFile);
 
 module.exports = router;

@@ -61,11 +61,12 @@ async function registerUser(email, username, password) {
     });
 }
 
-async function uploadFile(name, folderId) {
+async function uploadFile(name, folderId, size) {
     await prisma.file.create({
         data: {
             name,
             folderId,
+            size,
         },
     });
 }

@@ -98,10 +98,10 @@ input {
     font-weight: 700;
 }
 
-.log-out-link {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
+.submit-btn:disabled,
+.submit-btn:disabled:hover {
+    background-color: #5e5e5e;
+    cursor: not-allowed;
 }
 
 .sign-up-link:hover,
@@ -109,6 +109,12 @@ input {
 .log-out-link:hover,
 .submit-btn:hover {
     background-color: var(--secondary);
+}
+
+.log-out-link {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
 }
 
 .existing-link {
