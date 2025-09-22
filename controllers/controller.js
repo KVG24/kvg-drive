@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const db = require("../db/queries");
+const path = require("node:path");
 
 async function renderIndex(req, res) {
     if (req.user) {
@@ -117,10 +118,32 @@ async function uploadFile(req, res, next) {
         }
 
         for (const file of req.files) {
-            await db.uploadFile(file.originalname, folder.id, file.size);
+            await db.uploadFile(
+                file.originalname,
+                file.filename,
+                folder.id,
+                file.size
+            );
         }
 
         res.redirect("/drive");
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function downloadFile(req, res, next) {
+    try {
+        const filename = req.params.filename;
+        const filePath = path.join(__dirname, "..", "uploads", filename);
+        const originalName = filename.replace(/^\d+-/, "");
+
+        res.download(filePath, originalName, (err) => {
+            if (err) {
+                console.error("Error downloading file:", err);
+                res.status(500).send("Error downloading file");
+            }
+        });
     } catch (err) {
         next(err);
     }
@@ -135,4 +158,5 @@ module.exports = {
     logIn,
     logOut,
     uploadFile,
+    downloadFile,
 };

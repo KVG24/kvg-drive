@@ -10,6 +10,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
+    box-sizing: border-box;
 }
 
 body {
@@ -20,6 +21,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    padding: 1rem;
 }
 
 h1,
@@ -86,7 +88,8 @@ input {
 .sign-up-link,
 .log-in-link,
 .log-out-link,
-.submit-btn {
+.submit-btn,
+.file-download-link > a {
     text-decoration: none;
     padding: 1rem;
     color: black;
@@ -98,17 +101,18 @@ input {
     font-weight: 700;
 }
 
+.sign-up-link:hover,
+.log-in-link:hover,
+.log-out-link:hover,
+.submit-btn:hover,
+.file-download-link > a:hover {
+    background-color: var(--secondary);
+}
+
 .submit-btn:disabled,
 .submit-btn:disabled:hover {
     background-color: #5e5e5e;
     cursor: not-allowed;
-}
-
-.sign-up-link:hover,
-.log-in-link:hover,
-.log-out-link:hover,
-.submit-btn:hover {
-    background-color: var(--secondary);
 }
 
 .log-out-link {
@@ -137,4 +141,23 @@ input {
     border: 1px solid var(--accent);
     border-radius: 5px;
     padding: 1rem;
+}
+
+.files-container {
+    max-width: 1600px;
+    width: 100%;
+    border: 1px solid var(--accent);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0.5rem;
+}
+
+.file {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0 1rem 1rem;
+    border: 1px solid var(--secondary);
+    border-radius: 5px;
 }

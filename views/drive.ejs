@@ -26,9 +26,12 @@
         <div class="files-container">
             <% if (files) {%> <% files.forEach((file) => { %>
             <div class="file">
-                <div><%= file.name %></div>
-                <div><%= file.size %> KB</div>
-                <div><%= file.uploaded %></div>
+                <div class="file-name"><%= file.name %></div>
+                <div class="file-size"><%= file.size %> KB</div>
+                <div class="file-uploaded"><%= file.uploaded %></div>
+                <div class="file-download-link">
+                    <a href="/download/<%= file.filename %>">Download</a>
+                </div>
             </div>
             <% }) %> <% } %>
         </div>
