@@ -35,11 +35,46 @@ async function getFolder(ownerId, parentId, name) {
     });
 }
 
-async function getFiles(folderName) {
+async function getSubfolders(folderId) {
+    return await prisma.folder.findMany({
+        where: {
+            parentId: folderId,
+        },
+    });
+}
+
+async function getRootSubfolders(userId) {
+    return await prisma.folder.findMany({
+        where: {
+            ownerId: userId,
+            parentId: 1,
+        },
+    });
+}
+
+async function getFolderById(id) {
+    return await prisma.folder.findUnique({
+        where: {
+            id,
+        },
+    });
+}
+
+async function getFilesInRoot(userId) {
     return await prisma.file.findMany({
         where: {
             folder: {
-                name: folderName,
+                ownerId: userId,
+            },
+        },
+    });
+}
+
+async function getFilesInFolder(folderId) {
+    return await prisma.file.findMany({
+        where: {
+            folder: {
+                id: folderId,
             },
         },
     });
@@ -72,12 +107,27 @@ async function uploadFile(name, filename, folderId, size) {
     });
 }
 
+async function createFolder(name, ownerId, parentId) {
+    await prisma.folder.create({
+        data: {
+            name,
+            ownerId,
+            parentId,
+        },
+    });
+}
+
 module.exports = {
     getUser,
     getUserById,
     getLatestUserId,
     getFolder,
-    getFiles,
+    getFolderById,
+    getSubfolders,
+    getRootSubfolders,
+    getFilesInRoot,
+    getFilesInFolder,
     registerUser,
     uploadFile,
+    createFolder,
 };

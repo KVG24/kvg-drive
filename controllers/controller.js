@@ -27,7 +27,18 @@ function renderLogIn(req, res) {
 }
 
 async function renderDrive(req, res) {
-    const files = await db.getFiles(`${req.user.username}-main`);
+    let folder = null;
+    let files = [];
+    let subfolders = [];
+
+    if (req.params.folderId) {
+        folder = await db.getFolderById(parseInt(req.params.folderId, 10));
+        files = await db.getFilesInFolder(folder.id);
+        subfolders = await db.getSubfolders(folder.id);
+    } else {
+        files = await db.getFilesInRoot(req.user.id);
+        subfolders = await db.getRootSubfolders(req.user.id);
+    }
 
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     for (const file of files) {
@@ -38,9 +49,8 @@ async function renderDrive(req, res) {
         }).format(file.uploadTime);
 
         file.uploaded = formatted;
-        file.size = file.size / 1000;
     }
-    res.render("drive", { user: req.user, files });
+    res.render("drive", { user: req.user, folder, files, subfolders });
 }
 
 async function registerUser(req, res, next) {
@@ -149,6 +159,23 @@ async function downloadFile(req, res, next) {
     }
 }
 
+async function createFolder(req, res, next) {
+    try {
+        let parentId = 1;
+        if (req.params.folderId) {
+            parentId = parseInt(req.params.folderId, 10);
+        }
+
+        await db.createFolder(req.body.createFolderName, req.user.id, parentId);
+
+        res.redirect(
+            req.params.folderId ? `/drive/${req.params.folderId}` : "/drive"
+        );
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     renderIndex,
     renderSignUp,
@@ -159,4 +186,5 @@ module.exports = {
     logOut,
     uploadFile,
     downloadFile,
+    createFolder,
 };

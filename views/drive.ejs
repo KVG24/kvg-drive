@@ -8,26 +8,41 @@
     </head>
     <body>
         <a class="log-out-link" href="/log-out">Log Out</a>
-        <form
-            action="/upload"
-            class="upload-file-form"
-            method="post"
-            enctype="multipart/form-data"
-        >
-            <input
-                type="file"
-                name="files"
-                class="upload-file-input"
-                multiple
-            />
-            <button class="submit-btn" type="submit" disabled>Upload</button>
-        </form>
+
         <h1><%= user.username %> drive</h1>
         <div class="files-container">
+            <div class="btn-container">
+                <button
+                    class="upload-files-btn"
+                    type="button"
+                    onclick="openUploadFilesModal()"
+                >
+                    Upload files
+                </button>
+                <button
+                    class="create-folder-btn"
+                    type="button"
+                    onclick="openCreateFolderModal()"
+                >
+                    Create folder
+                </button>
+            </div>
+            <div class="separator"></div>
+            <div class="folders-container">
+                <% if (subfolders) { %> <%
+                subfolders.forEach(function(subfolder) { %>
+                <div
+                    class="folder"
+                    ondblclick="window.location.href='/drive/<%= subfolder.id %>'"
+                >
+                    📁 <%= subfolder.name %>
+                </div>
+                <% }) %> <% } %>
+            </div>
             <% if (files) {%> <% files.forEach((file) => { %>
             <div class="file">
                 <div class="file-name"><%= file.name %></div>
-                <div class="file-size"><%= file.size %> KB</div>
+                <div class="file-size"><%= file.size / 1000 %> KB</div>
                 <div class="file-uploaded"><%= file.uploaded %></div>
                 <div class="file-download-link">
                     <a href="/download/<%= file.filename %>">Download</a>
@@ -35,13 +50,76 @@
             </div>
             <% }) %> <% } %>
         </div>
+        <div class="upload-files-modal" style="display: none">
+            <form
+                action="/upload-files"
+                class="upload-files-form"
+                method="post"
+                enctype="multipart/form-data"
+            >
+                <input
+                    type="file"
+                    name="files"
+                    class="upload-files-input"
+                    multiple
+                />
+                <button
+                    class="submit-btn upload-files-submit-btn"
+                    type="submit"
+                    disabled
+                >
+                    Upload
+                </button>
+            </form>
+        </div>
+        <div class="create-folder-modal" style="display: none">
+            <form
+                action="<%= folder ? '/create-folder/' + folder.id : '/create-folder' %>"
+                method="post"
+                class="create-folder-form"
+            >
+                <input
+                    type="text"
+                    name="createFolderName"
+                    class="create-folder-input"
+                    placeholder="Folder Name"
+                    required
+                />
+                <button class="submit-btn" type="submit">Create folder</button>
+            </form>
+        </div>
+        <div class="modal-overlay" style="display: none"></div>
     </body>
-    <script>
-        const input = document.querySelector(".upload-file-input");
-        const btn = document.querySelector(".submit-btn");
+    <script defer>
+        const input = document.querySelector(".upload-files-input");
+        const btn = document.querySelector(".upload-files-submit-btn");
 
         input.addEventListener("change", () => {
             btn.disabled = input.files.length === 0;
         });
+
+        const overlay = document.querySelector(".modal-overlay");
+
+        function openUploadFilesModal() {
+            overlay.style.display = "block";
+            document.querySelector(".upload-files-modal").style.display =
+                "flex";
+        }
+
+        function openCreateFolderModal() {
+            overlay.style.display = "block";
+            document.querySelector(".create-folder-modal").style.display =
+                "flex";
+        }
+
+        function closeModals() {
+            document.querySelector(".upload-files-modal").style.display =
+                "none";
+            document.querySelector(".create-folder-modal").style.display =
+                "none";
+            overlay.style.display = "none";
+        }
+
+        overlay.addEventListener("click", closeModals);
     </script>
 </html>

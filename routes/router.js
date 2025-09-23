@@ -23,7 +23,10 @@ router.get("/log-in", controller.renderLogIn);
 router.post("/log-in", controller.logIn);
 router.get("/log-out", controller.logOut);
 router.get("/drive", controller.renderDrive);
-router.post("/upload", upload.array("files"), controller.uploadFile);
+router.get("/drive/:folderId", controller.renderDrive);
+router.post("/upload-files", upload.array("files"), controller.uploadFile);
 router.get("/download/:filename", controller.downloadFile);
+router.post("/create-folder", controller.createFolder);
+router.post("/create-folder/:folderId", controller.createFolder);
 
 module.exports = router;

@@ -89,6 +89,8 @@ input {
 .log-in-link,
 .log-out-link,
 .submit-btn,
+.upload-files-btn,
+.create-folder-btn,
 .file-download-link > a {
     text-decoration: none;
     padding: 1rem;
@@ -101,10 +103,17 @@ input {
     font-weight: 700;
 }
 
+.upload-files-btn,
+.create-folder-btn {
+    width: max-content;
+}
+
 .sign-up-link:hover,
 .log-in-link:hover,
 .log-out-link:hover,
 .submit-btn:hover,
+.upload-files-btn:hover,
+.create-folder-btn:hover,
 .file-download-link > a:hover {
     background-color: var(--secondary);
 }
@@ -137,7 +146,8 @@ input {
     color: var(--secondary);
 }
 
-.upload-file-form {
+.upload-files-form,
+.create-folder-form {
     border: 1px solid var(--accent);
     border-radius: 5px;
     padding: 1rem;
@@ -160,4 +170,40 @@ input {
     padding: 1rem 0 1rem 1rem;
     border: 1px solid var(--secondary);
     border-radius: 5px;
+}
+
+.folders-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.folder {
+    padding: 1rem;
+    background-color: var(--light-bg);
+    border-radius: 5px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+}
+
+.separator {
+    width: 100%;
+    border: 2px solid var(--light-bg);
+}
+
+.upload-files-modal,
+.create-folder-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 101;
 }
