@@ -17,36 +17,11 @@ async function getUserById(id) {
     });
 }
 
-async function getLatestUserId() {
-    const user = await prisma.user.findFirst({
-        orderBy: { id: "desc" },
-        select: { id: true },
-    });
-    return user?.id;
-}
-
 async function getFolder(ownerId, parentId) {
     return await prisma.folder.findFirst({
         where: {
             ownerId,
             parentId,
-        },
-    });
-}
-
-async function getSubfolders(folderId) {
-    return await prisma.folder.findMany({
-        where: {
-            parentId: folderId,
-        },
-    });
-}
-
-async function getRootSubfolders(userId) {
-    return await prisma.folder.findMany({
-        where: {
-            ownerId: userId,
-            parentId: 1,
         },
     });
 }
@@ -59,13 +34,10 @@ async function getFolderById(id) {
     });
 }
 
-async function getFilesInRoot(userId) {
-    return await prisma.file.findMany({
+async function getSubfolders(folderId) {
+    return await prisma.folder.findMany({
         where: {
-            folder: {
-                parentId: null,
-                ownerId: userId,
-            },
+            parentId: folderId,
         },
     });
 }
@@ -81,18 +53,23 @@ async function getFilesInFolder(folderId) {
 }
 
 async function registerUser(email, username, password) {
-    await prisma.user.create({
-        data: {
-            email,
-            username,
-            password,
-            Folder: {
-                create: {
-                    name: `${username}-main`,
-                },
+    return await prisma.$transaction(async (tx) => {
+        const user = await tx.user.create({
+            data: { email, username, password },
+        });
+
+        const rootFolder = await tx.folder.create({
+            data: {
+                name: `${username}-main`,
+                ownerId: user.id,
             },
-        },
-        include: { Folder: true },
+        });
+
+        return await tx.user.update({
+            where: { id: user.id },
+            data: { rootFolderId: rootFolder.id },
+            include: { rootFolder: true },
+        });
     });
 }
 
@@ -120,12 +97,9 @@ async function createFolder(name, ownerId, parentId) {
 module.exports = {
     getUser,
     getUserById,
-    getLatestUserId,
     getFolder,
     getFolderById,
     getSubfolders,
-    getRootSubfolders,
-    getFilesInRoot,
     getFilesInFolder,
     registerUser,
     uploadFile,

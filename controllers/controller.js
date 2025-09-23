@@ -6,7 +6,7 @@ const path = require("node:path");
 
 async function renderIndex(req, res) {
     if (req.user) {
-        res.redirect("/drive/1");
+        res.redirect(`/drive/${req.user.rootFolderId}`);
     } else {
         res.render("index");
     }
@@ -92,7 +92,7 @@ function logIn(req, res, next) {
         }
         req.logIn(user, (err) => {
             if (err) return next(err);
-            return res.redirect("/drive/1");
+            return res.redirect(`/drive/${req.user.rootFolderId}`);
         });
     })(req, res, next);
 }
@@ -129,7 +129,9 @@ async function uploadFile(req, res, next) {
         }
 
         res.redirect(
-            req.params.folderId ? `/drive/${req.params.folderId}` : "/drive/1"
+            req.params.folderId
+                ? `/drive/${req.params.folderId}`
+                : `/drive/${req.user.rootFolderId}`
         );
     } catch (err) {
         next(err);
@@ -155,7 +157,7 @@ async function downloadFile(req, res, next) {
 
 async function createFolder(req, res, next) {
     try {
-        let parentId = 1;
+        let parentId = null;
         if (req.params.folderId) {
             parentId = parseInt(req.params.folderId, 10);
         }
@@ -163,7 +165,9 @@ async function createFolder(req, res, next) {
         await db.createFolder(req.body.createFolderName, req.user.id, parentId);
 
         res.redirect(
-            req.params.folderId ? `/drive/${req.params.folderId}` : "/drive/1"
+            req.params.folderId
+                ? `/drive/${req.params.folderId}`
+                : `/drive/${req.user.rootFolderId}`
         );
     } catch (err) {
         next(err);

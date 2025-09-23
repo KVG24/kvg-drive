@@ -12,7 +12,7 @@
         <h1><%= user.username %> drive</h1>
         <div class="files-container">
             <div class="folders-container">
-                <% if (folder.id !== 1) {%>
+                <% if (folder.id !== user.rootFolderId) {%>
                 <div
                     class="folder back-to-main"
                     onclick="window.location.href='/drive/<%= folder.parentId %>'"

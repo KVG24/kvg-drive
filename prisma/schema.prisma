@@ -15,11 +15,13 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  username String   @unique
-  password String
-  Folder   Folder[]
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  username     String   @unique
+  password     String
+  rootFolderId Int?     @unique
+  rootFolder   Folder?  @relation("RootFolder", fields: [rootFolderId], references: [id])
+  Folder       Folder[]
 }
 
 model Folder {
@@ -32,6 +34,7 @@ model Folder {
   parent    Folder?  @relation("FolderHierarchy", fields: [parentId], references: [id])
   children  Folder[] @relation("FolderHierarchy")
   File      File[]
+  rootUser  User?    @relation("RootFolder")
 }
 
 model File {
