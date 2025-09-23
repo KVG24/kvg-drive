@@ -63,6 +63,7 @@ async function getFilesInRoot(userId) {
     return await prisma.file.findMany({
         where: {
             folder: {
+                parentId: null,
                 ownerId: userId,
             },
         },

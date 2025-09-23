@@ -22,7 +22,6 @@ router.post("/sign-up", validateSignUp, controller.registerUser);
 router.get("/log-in", controller.renderLogIn);
 router.post("/log-in", controller.logIn);
 router.get("/log-out", controller.logOut);
-router.get("/drive", controller.renderDrive);
 router.get("/drive/:folderId", controller.renderDrive);
 router.post("/upload-files", upload.array("files"), controller.uploadFile);
 router.post(

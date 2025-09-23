@@ -90,8 +90,7 @@ input {
 .log-out-link,
 .submit-btn,
 .upload-files-btn,
-.create-folder-btn,
-.file-download-link > a {
+.create-folder-btn {
     text-decoration: none;
     padding: 1rem;
     color: black;
@@ -103,19 +102,17 @@ input {
     font-weight: 700;
 }
 
-.upload-files-btn,
-.create-folder-btn {
-    width: max-content;
-}
-
 .sign-up-link:hover,
 .log-in-link:hover,
 .log-out-link:hover,
 .submit-btn:hover,
 .upload-files-btn:hover,
-.create-folder-btn:hover,
-.file-download-link > a:hover {
+.create-folder-btn:hover {
     background-color: var(--secondary);
+}
+
+.upload-files-btn {
+    margin-left: auto;
 }
 
 .submit-btn:disabled,
@@ -167,9 +164,37 @@ input {
 .file {
     display: flex;
     justify-content: space-between;
-    padding: 1rem 0 1rem 1rem;
+    align-items: center;
     border: 1px solid var(--secondary);
     border-radius: 5px;
+    padding-left: 1rem;
+}
+
+.file-name {
+    width: 200px;
+}
+
+.file-size {
+    width: 100px;
+    text-align: right;
+}
+
+.file-uploaded {
+    width: 160px;
+}
+
+.file-download-link > a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.file-download-link img {
+    padding: 0.5rem;
+    border-radius: 5px;
+    background-color: var(--light-bg);
+    height: 100%;
 }
 
 .folders-container {
@@ -177,10 +202,26 @@ input {
     gap: 1rem;
 }
 
-.folder {
+.folder,
+.add-folder-btn {
     padding: 1rem;
     background-color: var(--light-bg);
     border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.add-folder-btn,
+.back-to-main {
+    background-color: #4681b8;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 1.5rem;
+    padding: 0.8rem 1rem 0.8rem 1rem;
 }
 
 .modal-overlay {
@@ -192,11 +233,6 @@ input {
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     z-index: 100;
-}
-
-.separator {
-    width: 100%;
-    border: 2px solid var(--light-bg);
 }
 
 .upload-files-modal,

@@ -11,7 +11,32 @@
 
         <h1><%= user.username %> drive</h1>
         <div class="files-container">
-            <div class="btn-container">
+            <div class="folders-container">
+                <% if (folder.id !== 1) {%>
+                <div
+                    class="folder back-to-main"
+                    onclick="window.location.href='/drive/<%= folder.parentId %>'"
+                >
+                    <img src="/icons/folder.svg" alt="folder icon" />
+                    ←
+                </div>
+                <% } %> <% if (subfolders) { %> <%
+                subfolders.forEach(function(subfolder) { %>
+                <div
+                    class="folder"
+                    onclick="window.location.href='/drive/<%= subfolder.id %>'"
+                >
+                    <img src="/icons/folder.svg" alt="folder icon" />
+                    <%= subfolder.name %>
+                </div>
+                <% }) %> <% } %>
+                <button
+                    class="add-folder-btn"
+                    type="button"
+                    onclick="openCreateFolderModal()"
+                >
+                    + <img src="/icons/folder.svg" alt="folder icon" />
+                </button>
                 <button
                     class="upload-files-btn"
                     type="button"
@@ -19,25 +44,6 @@
                 >
                     Upload files
                 </button>
-                <button
-                    class="create-folder-btn"
-                    type="button"
-                    onclick="openCreateFolderModal()"
-                >
-                    Create folder
-                </button>
-            </div>
-            <div class="separator"></div>
-            <div class="folders-container">
-                <% if (subfolders) { %> <%
-                subfolders.forEach(function(subfolder) { %>
-                <div
-                    class="folder"
-                    ondblclick="window.location.href='/drive/<%= subfolder.id %>'"
-                >
-                    📁 <%= subfolder.name %>
-                </div>
-                <% }) %> <% } %>
             </div>
             <% if (files) {%> <% files.forEach((file) => { %>
             <div class="file">
@@ -45,7 +51,9 @@
                 <div class="file-size"><%= file.size / 1000 %> KB</div>
                 <div class="file-uploaded"><%= file.uploaded %></div>
                 <div class="file-download-link">
-                    <a href="/download/<%= file.filename %>">Download</a>
+                    <a href="/download/<%= file.filename %>"
+                        ><img src="/icons/download.svg" alt="download icon"
+                    /></a>
                 </div>
             </div>
             <% }) %> <% } %>

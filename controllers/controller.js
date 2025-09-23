@@ -6,7 +6,7 @@ const path = require("node:path");
 
 async function renderIndex(req, res) {
     if (req.user) {
-        res.redirect("/drive");
+        res.redirect("/drive/1");
     } else {
         res.render("index");
     }
@@ -31,14 +31,9 @@ async function renderDrive(req, res) {
     let files = [];
     let subfolders = [];
 
-    if (req.params.folderId) {
-        folder = await db.getFolderById(parseInt(req.params.folderId, 10));
-        files = await db.getFilesInFolder(folder.id);
-        subfolders = await db.getSubfolders(folder.id);
-    } else {
-        files = await db.getFilesInRoot(req.user.id);
-        subfolders = await db.getRootSubfolders(req.user.id);
-    }
+    folder = await db.getFolderById(parseInt(req.params.folderId, 10));
+    files = await db.getFilesInFolder(folder.id);
+    subfolders = await db.getSubfolders(folder.id);
 
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     for (const file of files) {
@@ -97,7 +92,7 @@ function logIn(req, res, next) {
         }
         req.logIn(user, (err) => {
             if (err) return next(err);
-            return res.redirect("/drive");
+            return res.redirect("/drive/1");
         });
     })(req, res, next);
 }
@@ -134,7 +129,7 @@ async function uploadFile(req, res, next) {
         }
 
         res.redirect(
-            req.params.folderId ? `/drive/${req.params.folderId}` : "/drive"
+            req.params.folderId ? `/drive/${req.params.folderId}` : "/drive/1"
         );
     } catch (err) {
         next(err);
@@ -168,7 +163,7 @@ async function createFolder(req, res, next) {
         await db.createFolder(req.body.createFolderName, req.user.id, parentId);
 
         res.redirect(
-            req.params.folderId ? `/drive/${req.params.folderId}` : "/drive"
+            req.params.folderId ? `/drive/${req.params.folderId}` : "/drive/1"
         );
     } catch (err) {
         next(err);
