@@ -117,14 +117,11 @@ async function uploadFile(req, res, next) {
             return res.status(400).send("No file uploaded.");
         }
 
-        const folder = await db.getFolder(
-            req.user.id,
-            null,
-            `${req.user.username}-main`
-        );
-
-        if (!folder) {
-            return res.status(404).send("Main folder not found for user.");
+        let folder;
+        if (req.params.folderId) {
+            folder = await db.getFolderById(Number(req.params.folderId));
+        } else {
+            folder = await db.getFolder(req.user.id, null);
         }
 
         for (const file of req.files) {
@@ -136,7 +133,9 @@ async function uploadFile(req, res, next) {
             );
         }
 
-        res.redirect("/drive");
+        res.redirect(
+            req.params.folderId ? `/drive/${req.params.folderId}` : "/drive"
+        );
     } catch (err) {
         next(err);
     }

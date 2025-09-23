@@ -25,6 +25,11 @@ router.get("/log-out", controller.logOut);
 router.get("/drive", controller.renderDrive);
 router.get("/drive/:folderId", controller.renderDrive);
 router.post("/upload-files", upload.array("files"), controller.uploadFile);
+router.post(
+    "/upload-files/:folderId",
+    upload.array("files"),
+    controller.uploadFile
+);
 router.get("/download/:filename", controller.downloadFile);
 router.post("/create-folder", controller.createFolder);
 router.post("/create-folder/:folderId", controller.createFolder);

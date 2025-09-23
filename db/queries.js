@@ -25,12 +25,11 @@ async function getLatestUserId() {
     return user?.id;
 }
 
-async function getFolder(ownerId, parentId, name) {
+async function getFolder(ownerId, parentId) {
     return await prisma.folder.findFirst({
         where: {
             ownerId,
             parentId,
-            name,
         },
     });
 }

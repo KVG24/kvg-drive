@@ -52,7 +52,7 @@
         </div>
         <div class="upload-files-modal" style="display: none">
             <form
-                action="/upload-files"
+                action="<%= folder ? '/upload-files/' + folder.id : '/upload-files' %>"
                 class="upload-files-form"
                 method="post"
                 enctype="multipart/form-data"
