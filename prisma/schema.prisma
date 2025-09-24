@@ -45,6 +45,7 @@ model File {
   folderId   Int
   size       Int
   uploadTime DateTime @default(now())
+  url        String   @unique
 }
 
 model Session {

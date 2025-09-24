@@ -3,6 +3,13 @@ const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const db = require("../db/queries");
 const path = require("node:path");
+require("dotenv").config();
+const { createClient } = require("@supabase/supabase-js");
+
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_KEY
+);
 
 async function renderIndex(req, res) {
     if (req.user) {
@@ -108,18 +115,33 @@ function logOut(req, res, next) {
 
 async function uploadFiles(req, res, next) {
     try {
-        if (!req.files) {
-            return res.status(400).send("No file uploaded.");
-        }
-
         const folder = await db.getFolderById(Number(req.params.folderId));
 
         for (const file of req.files) {
+            file.filename = Date.now() + "-" + file.originalname; // assign unique name
+
+            const { data, error } = await supabase.storage
+                .from("files")
+                .upload(
+                    `${req.params.folderId}/${file.filename}`,
+                    file.buffer,
+                    {
+                        upsert: false,
+                    }
+                );
+            if (error) {
+                console.error("Supabase error: " + error);
+            }
+
+            file.path = data.path;
+            file.url = data.path;
+
             await db.uploadFile(
                 file.originalname,
                 file.filename,
                 folder.id,
-                file.size
+                file.size,
+                file.url
             );
         }
 

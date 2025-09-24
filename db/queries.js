@@ -73,13 +73,14 @@ async function registerUser(email, username, password) {
     });
 }
 
-async function uploadFile(name, filename, folderId, size) {
+async function uploadFile(name, filename, folderId, size, url) {
     await prisma.file.create({
         data: {
             name,
             filename,
             folderId,
             size,
+            url,
         },
     });
 }

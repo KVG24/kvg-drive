@@ -1,19 +1,13 @@
 const { Router } = require("express");
+const router = Router();
 const controller = require("../controllers/controller");
 const { validateSignUp } = require("../controllers/validation");
 const multer = require("multer");
-
-const router = Router();
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "uploads/"),
-    filename: (req, file, cb) => {
-        const uniqueName = Date.now() + "-" + file.originalname;
-        cb(null, uniqueName);
-    },
-});
-
-const upload = multer({ storage });
+const storage = multer.memoryStorage();
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+}); // 10MB file limit
 
 router.get("/", controller.renderIndex);
 router.get("/sign-up", controller.renderSignUp);
