@@ -106,18 +106,13 @@ function logOut(req, res, next) {
     });
 }
 
-async function uploadFile(req, res, next) {
+async function uploadFiles(req, res, next) {
     try {
         if (!req.files) {
             return res.status(400).send("No file uploaded.");
         }
 
-        let folder;
-        if (req.params.folderId) {
-            folder = await db.getFolderById(Number(req.params.folderId));
-        } else {
-            folder = await db.getFolder(req.user.id, null);
-        }
+        const folder = await db.getFolderById(Number(req.params.folderId));
 
         for (const file of req.files) {
             await db.uploadFile(
@@ -157,10 +152,7 @@ async function downloadFile(req, res, next) {
 
 async function createFolder(req, res, next) {
     try {
-        let parentId = null;
-        if (req.params.folderId) {
-            parentId = parseInt(req.params.folderId, 10);
-        }
+        const parentId = parseInt(req.params.folderId, 10);
 
         await db.createFolder(req.body.createFolderName, req.user.id, parentId);
 
@@ -182,7 +174,7 @@ module.exports = {
     registerUser,
     logIn,
     logOut,
-    uploadFile,
+    uploadFiles,
     downloadFile,
     createFolder,
 };
