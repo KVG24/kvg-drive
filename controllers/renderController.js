@@ -30,6 +30,9 @@ async function renderDrive(req, res) {
     folder = await db.getFolderById(parseInt(req.params.folderId, 10));
     files = await db.getFilesInFolder(folder.id);
     subfolders = await db.getSubfolders(folder.id);
+    const parentFolder = folder.parentId
+        ? await db.getFolderById(folder.parentId)
+        : null;
 
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     for (const file of files) {
@@ -41,7 +44,13 @@ async function renderDrive(req, res) {
 
         file.uploaded = formattedTime;
     }
-    res.render("drive", { user: req.user, folder, files, subfolders });
+    res.render("drive", {
+        user: req.user,
+        folder,
+        files,
+        subfolders,
+        parentFolder,
+    });
 }
 
 module.exports = {

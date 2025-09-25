@@ -12,13 +12,13 @@
         <h1><%= user.username %> drive</h1>
         <div class="files-container">
             <div class="folders-container">
-                <% if (folder.id !== user.rootFolderId) {%>
+                <% if (folder.id !== user.rootFolderId && parentFolder) { %>
                 <div
-                    class="folder back-to-main"
-                    onclick="window.location.href='/drive/<%= folder.parentId %>'"
+                    class="folder back-to-parent"
+                    onclick="window.location.href='/drive/<%= parentFolder.id %>'"
                 >
-                    <img src="/icons/folder.svg" />
-                    ←
+                    <img src="/icons/back.svg" alt="folder icon" />
+                    <%= parentFolder.name %>
                 </div>
                 <% } %> <% if (subfolders) { %> <%
                 subfolders.forEach(function(subfolder) { %>
@@ -35,7 +35,7 @@
                     type="button"
                     onclick="openCreateFolderModal()"
                 >
-                    + <img src="/icons/folder.svg" />
+                    <img src="/icons/new.svg" />
                 </button>
                 <button
                     class="upload-files-btn"
