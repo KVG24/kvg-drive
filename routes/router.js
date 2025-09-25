@@ -5,7 +5,7 @@ const storageController = require("../controllers/storageController");
 const authController = require("../controllers/authController");
 const renderController = require("../controllers/renderController");
 
-const { validateSignUp } = require("../controllers/validation");
+const { validateSignUp } = require("../utils/signUpValidation");
 
 const multer = require("multer");
 const storage = multer.memoryStorage();

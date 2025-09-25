@@ -1,7 +1,7 @@
 const db = require("../db/queries");
-const path = require("node:path");
 require("dotenv").config();
 const { createClient } = require("@supabase/supabase-js");
+const { getFolderPath } = require("../utils/getFolderPath");
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -10,21 +10,17 @@ const supabase = createClient(
 
 async function uploadFiles(req, res, next) {
     try {
-        const folder = await db.getFolderById(Number(req.params.folderId));
-
         for (const file of req.files) {
             // add "date-" to filename for unique name
             file.filename = Date.now() + "-" + file.originalname;
 
+            // get full path to file
+            const folderPath = await getFolderPath(req.params.folderId);
+            const storagePath = `${folderPath}/${file.filename}`;
+
             const { data, error } = await supabase.storage
                 .from("files")
-                .upload(
-                    `${req.params.folderId}/${file.filename}`,
-                    file.buffer,
-                    {
-                        upsert: false,
-                    }
-                );
+                .upload(storagePath, file.buffer, { upsert: false });
             if (error) {
                 console.error("Supabase error: " + error);
             }
@@ -35,7 +31,7 @@ async function uploadFiles(req, res, next) {
             await db.uploadFile(
                 file.originalname,
                 file.filename,
-                folder.id,
+                Number(req.params.folderId),
                 file.size,
                 file.url
             );
@@ -55,10 +51,14 @@ async function downloadFile(req, res, next) {
     try {
         const { folder, filename } = req.params;
 
+        // get full path to file
+        const folderPath = await getFolderPath(folder);
+        const storagePath = `${folderPath}/${filename}`;
+
         // download from Supabase
         const { data, error } = await supabase.storage
             .from("files")
-            .download(`${folder}/${filename}`);
+            .download(storagePath);
 
         if (error) {
             console.error("Supabase error:", error.message);
