@@ -2,6 +2,7 @@ const db = require("../db/queries");
 require("dotenv").config();
 const { createClient } = require("@supabase/supabase-js");
 const { getFolderPath } = require("../utils/getFolderPath");
+const path = require("node:path");
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -11,8 +12,9 @@ const supabase = createClient(
 async function uploadFiles(req, res, next) {
     try {
         for (const file of req.files) {
-            // add "date-" to filename for unique name
-            file.filename = Date.now() + "-" + file.originalname;
+            // make filename unique with original file extension
+            file.filename =
+                crypto.randomUUID() + path.extname(file.originalname);
 
             // get full path to file
             const folderPath = await getFolderPath(req.params.folderId);
@@ -22,7 +24,7 @@ async function uploadFiles(req, res, next) {
                 .from("files")
                 .upload(storagePath, file.buffer, { upsert: false });
             if (error) {
-                console.error("Supabase error: " + error);
+                console.error("Supabase error:", error.message);
             }
 
             file.path = data.path;
@@ -49,13 +51,13 @@ async function uploadFiles(req, res, next) {
 
 async function downloadFile(req, res, next) {
     try {
-        const { folder, filename } = req.params;
+        const { folderId, filename } = req.params;
 
         // get full path to file
-        const folderPath = await getFolderPath(folder);
+        const folderPath = await getFolderPath(folderId);
         const storagePath = `${folderPath}/${filename}`;
 
-        // download from Supabase
+        // download from Supabase storage
         const { data, error } = await supabase.storage
             .from("files")
             .download(storagePath);
@@ -68,16 +70,40 @@ async function downloadFile(req, res, next) {
         // convert supabase blob to buffer
         const buffer = Buffer.from(await data.arrayBuffer());
 
-        // remove "date-" from filename
-        const originalName = filename.replace(/^\d+-/, "");
+        // get file from db
+        const dbFile = await db.getFileByFilename(filename);
 
         res.set({
             "Content-Type": "application/octet-stream",
-            "Content-Disposition": `attachment; filename="${originalName}"`,
+            "Content-Disposition": `attachment; filename="${dbFile.name}"`,
             "Content-Length": buffer.length,
         });
 
         return res.send(buffer);
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function deleteFile(req, res, next) {
+    try {
+        const { folderId, filename } = req.params;
+
+        // get full path to file
+        const folderPath = await getFolderPath(folderId);
+        const storagePath = `${folderPath}/${filename}`;
+
+        // delete from Supabase storage
+        const { data, error } = await supabase.storage
+            .from("files")
+            .remove([storagePath]);
+        if (error) {
+            console.error("Supabase error:", error.message);
+        }
+
+        // delete from database
+        await db.deleteFile(filename);
+        res.redirect(`/drive/${folderId}`);
     } catch (err) {
         next(err);
     }
@@ -102,5 +128,6 @@ async function createFolder(req, res, next) {
 module.exports = {
     uploadFiles,
     downloadFile,
+    deleteFile,
     createFolder,
 };

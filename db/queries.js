@@ -52,6 +52,14 @@ async function getFilesInFolder(folderId) {
     });
 }
 
+async function getFileByFilename(filename) {
+    return await prisma.file.findUnique({
+        where: {
+            filename,
+        },
+    });
+}
+
 async function registerUser(email, username, password) {
     return await prisma.$transaction(async (tx) => {
         const user = await tx.user.create({
@@ -85,6 +93,14 @@ async function uploadFile(name, filename, folderId, size, url) {
     });
 }
 
+async function deleteFile(filename) {
+    await prisma.file.delete({
+        where: {
+            filename,
+        },
+    });
+}
+
 async function createFolder(name, ownerId, parentId) {
     await prisma.folder.create({
         data: {
@@ -102,7 +118,9 @@ module.exports = {
     getFolderById,
     getSubfolders,
     getFilesInFolder,
+    getFileByFilename,
     registerUser,
     uploadFile,
+    deleteFile,
     createFolder,
 };

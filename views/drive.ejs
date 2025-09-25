@@ -17,7 +17,7 @@
                     class="folder back-to-main"
                     onclick="window.location.href='/drive/<%= folder.parentId %>'"
                 >
-                    <img src="/icons/folder.svg" alt="folder icon" />
+                    <img src="/icons/folder.svg" />
                     ←
                 </div>
                 <% } %> <% if (subfolders) { %> <%
@@ -26,7 +26,7 @@
                     class="folder"
                     onclick="window.location.href='/drive/<%= subfolder.id %>'"
                 >
-                    <img src="/icons/folder.svg" alt="folder icon" />
+                    <img src="/icons/folder.svg" />
                     <%= subfolder.name %>
                 </div>
                 <% }) %> <% } %>
@@ -35,7 +35,7 @@
                     type="button"
                     onclick="openCreateFolderModal()"
                 >
-                    + <img src="/icons/folder.svg" alt="folder icon" />
+                    + <img src="/icons/folder.svg" />
                 </button>
                 <button
                     class="upload-files-btn"
@@ -50,9 +50,12 @@
                 <div class="file-name"><%= file.name %></div>
                 <div class="file-size"><%= file.size / 1000 %> KB</div>
                 <div class="file-uploaded"><%= file.uploaded %></div>
-                <div class="file-download-link">
+                <div class="file-btn-container">
                     <a href="/download/<%= folder.id %>/<%= file.filename %>"
-                        ><img src="/icons/download.svg" alt="download icon"
+                        ><img src="/icons/download.svg"
+                    /></a>
+                    <a href="/delete/<%= folder.id %>/<%= file.filename %>"
+                        ><img src="/icons/delete.svg"
                     /></a>
                 </div>
             </div>

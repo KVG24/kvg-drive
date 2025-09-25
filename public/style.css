@@ -186,14 +186,19 @@ input {
     width: 100%;
 }
 
-.file-download-link > a {
+.file-btn-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.file-btn-container > a {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
 }
 
-.file-download-link img {
+.file-btn-container img {
     padding: 0.5rem;
     border-radius: 5px;
     background-color: var(--light-bg);

@@ -14,19 +14,25 @@ const upload = multer({
     limits: { fileSize: 10 * 1024 * 1024 },
 }); // 10MB file limit
 
+// Render routes
 router.get("/", renderController.renderIndex);
 router.get("/sign-up", renderController.renderSignUp);
-router.post("/sign-up", validateSignUp, authController.registerUser);
 router.get("/log-in", renderController.renderLogIn);
+router.get("/drive/:folderId", renderController.renderDrive);
+
+// Authentication routes
+router.post("/sign-up", validateSignUp, authController.registerUser);
 router.post("/log-in", authController.logIn);
 router.get("/log-out", authController.logOut);
-router.get("/drive/:folderId", renderController.renderDrive);
+
+// Storage routes
 router.post(
     "/upload-files/:folderId",
     upload.array("files"),
     storageController.uploadFiles
 );
-router.get("/download/:folder/:filename", storageController.downloadFile);
+router.get("/download/:folderId/:filename", storageController.downloadFile);
+router.get("/delete/:folderId/:filename", storageController.deleteFile);
 router.post("/create-folder/:folderId", storageController.createFolder);
 
 module.exports = router;
