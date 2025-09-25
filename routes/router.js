@@ -26,7 +26,7 @@ router.post(
     upload.array("files"),
     storageController.uploadFiles
 );
-router.get("/download/:filename", storageController.downloadFile);
+router.get("/download/:folder/:filename", storageController.downloadFile);
 router.post("/create-folder/:folderId", storageController.createFolder);
 
 module.exports = router;

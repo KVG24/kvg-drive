@@ -51,7 +51,7 @@
                 <div class="file-size"><%= file.size / 1000 %> KB</div>
                 <div class="file-uploaded"><%= file.uploaded %></div>
                 <div class="file-download-link">
-                    <a href="/download/<%= file.filename %>"
+                    <a href="/download/<%= folder.id %>/<%= file.filename %>"
                         ><img src="/icons/download.svg" alt="download icon"
                     /></a>
                 </div>

@@ -13,7 +13,8 @@ async function uploadFiles(req, res, next) {
         const folder = await db.getFolderById(Number(req.params.folderId));
 
         for (const file of req.files) {
-            file.filename = Date.now() + "-" + file.originalname; // assign unique name
+            // add "date-" to filename for unique name
+            file.filename = Date.now() + "-" + file.originalname;
 
             const { data, error } = await supabase.storage
                 .from("files")
@@ -52,16 +53,31 @@ async function uploadFiles(req, res, next) {
 
 async function downloadFile(req, res, next) {
     try {
-        const filename = req.params.filename;
-        const filePath = path.join(__dirname, "..", "uploads", filename);
+        const { folder, filename } = req.params;
+
+        // download from Supabase
+        const { data, error } = await supabase.storage
+            .from("files")
+            .download(`${folder}/${filename}`);
+
+        if (error) {
+            console.error("Supabase error:", error.message);
+            return res.status(500).send("Error downloading file");
+        }
+
+        // convert supabase blob to buffer
+        const buffer = Buffer.from(await data.arrayBuffer());
+
+        // remove "date-" from filename
         const originalName = filename.replace(/^\d+-/, "");
 
-        res.download(filePath, originalName, (err) => {
-            if (err) {
-                console.error("Error downloading file:", err);
-                res.status(500).send("Error downloading file");
-            }
+        res.set({
+            "Content-Type": "application/octet-stream",
+            "Content-Disposition": `attachment; filename="${originalName}"`,
+            "Content-Length": buffer.length,
         });
+
+        return res.send(buffer);
     } catch (err) {
         next(err);
     }
