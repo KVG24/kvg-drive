@@ -61,7 +61,9 @@
                     <a href="/download/<%= folder.id %>/<%= file.filename %>"
                         ><img src="/icons/download.svg"
                     /></a>
-                    <a href="/delete/<%= folder.id %>/<%= file.filename %>"
+                    <a
+                        class="delete-btn"
+                        href="/delete/<%= folder.id %>/<%= file.filename %>"
                         ><img src="/icons/delete.svg"
                     /></a>
                 </div>
@@ -75,20 +77,29 @@
                             name="shareLink"
                             class="share-link-textarea"
                             rows="15"
-                            placeholder="Link will be here..."
+                            id="share-text-<%= file.id %>"
+                            placeholder="Select duration for link availability and click 'Get Link'"
+                            readonly
                         ></textarea>
-                        <label for="duration">Available for:</label>
                         <select name="duration" class="duration-select">
                             <option value="3600" selected>1 Hour</option>
                             <option value="43200">12 Hours</option>
                             <option value="86400">1 Day</option>
                         </select>
-                        <button type="submit" class="submit-btn">
-                            Get link to file
-                        </button>
+                        <div class="share-file-btn-container">
+                            <button type="submit" class="submit-btn">
+                                Get link
+                            </button>
+                            <button
+                                type="button"
+                                class="submit-btn copy-btn"
+                                data-file-id="<%= file.id %>"
+                            >
+                                Copy link
+                            </button>
+                        </div>
                     </form>
                 </div>
-                <div class="modal-overlay" style="display: none"></div>
             </div>
             <% }) %> <% } %>
         </div>
@@ -127,8 +138,17 @@
                     placeholder="Folder Name"
                     required
                 />
-                <button class="submit-btn" type="submit">Create folder</button>
+                <button
+                    class="submit-btn create-folder-submit-btn"
+                    type="submit"
+                >
+                    Create folder
+                </button>
             </form>
+        </div>
+        <div class="modal-overlay" style="display: none"></div>
+        <div class="loader-overlay" style="display: none">
+            <div class="loader"></div>
         </div>
     </body>
     <script defer>
@@ -194,5 +214,39 @@
         }
 
         overlay.addEventListener("click", closeModals);
+
+        // "Copy link" button functionality
+        document.querySelectorAll(".copy-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const fileId = btn.dataset.fileId;
+                const textarea = document.getElementById(
+                    `share-text-${fileId}`
+                );
+                if (!textarea) return;
+
+                navigator.clipboard
+                    .writeText(textarea.value)
+                    .then(() => {
+                        const originalText = btn.textContent;
+                        btn.textContent = "Copied!";
+                        setTimeout(() => {
+                            btn.textContent = originalText;
+                        }, 2000);
+                    })
+                    .catch((err) => console.error(err));
+            });
+        });
+
+        // Loader functionality
+        const loader = document.querySelector(".loader-overlay");
+        const buttons = document.querySelectorAll(
+            ".delete-btn, .upload-files-submit-btn, .create-folder-submit-btn"
+        );
+
+        buttons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                loader.style.display = "flex";
+            });
+        });
     </script>
 </html>
