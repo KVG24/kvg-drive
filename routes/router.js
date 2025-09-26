@@ -33,6 +33,7 @@ router.post(
 );
 router.get("/download/:folderId/:filename", storageController.downloadFile);
 router.get("/delete/:folderId/:filename", storageController.deleteFile);
+router.post("/share/:folderId/:filename", storageController.shareFile);
 router.post("/create-folder/:folderId", storageController.createFolder);
 
 module.exports = router;

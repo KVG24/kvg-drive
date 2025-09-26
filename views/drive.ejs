@@ -20,8 +20,9 @@
                     <img src="/icons/back.svg" alt="folder icon" />
                     <%= parentFolder.name %>
                 </div>
-                <% } %> <% if (subfolders) { %> <%
-                subfolders.forEach(function(subfolder) { %>
+                <% } %> <% if (subfolders) { %>
+                <!-- comment to prevent linter ruining markup in VS Code -->
+                <% subfolders.forEach(function(subfolder) { %>
                 <div
                     class="folder"
                     onclick="window.location.href='/drive/<%= subfolder.id %>'"
@@ -51,6 +52,12 @@
                 <div class="file-size"><%= file.size / 1000 %> KB</div>
                 <div class="file-uploaded"><%= file.uploaded %></div>
                 <div class="file-btn-container">
+                    <button
+                        type="button"
+                        onclick="openShareModal('<%= file.id %>', '<%= folder.id %>', '<%= file.filename %>')"
+                    >
+                        <img src="/icons/share.svg" />
+                    </button>
                     <a href="/download/<%= folder.id %>/<%= file.filename %>"
                         ><img src="/icons/download.svg"
                     /></a>
@@ -58,6 +65,30 @@
                         ><img src="/icons/delete.svg"
                     /></a>
                 </div>
+                <div
+                    class="share-modal"
+                    data-file-id="<%= file.id %>"
+                    style="display: none"
+                >
+                    <form class="share-file-form">
+                        <textarea
+                            name="shareLink"
+                            class="share-link-textarea"
+                            rows="15"
+                            placeholder="Link will be here..."
+                        ></textarea>
+                        <label for="duration">Available for:</label>
+                        <select name="duration" class="duration-select">
+                            <option value="3600" selected>1 Hour</option>
+                            <option value="43200">12 Hours</option>
+                            <option value="86400">1 Day</option>
+                        </select>
+                        <button type="submit" class="submit-btn">
+                            Get link to file
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-overlay" style="display: none"></div>
             </div>
             <% }) %> <% } %>
         </div>
@@ -99,7 +130,6 @@
                 <button class="submit-btn" type="submit">Create folder</button>
             </form>
         </div>
-        <div class="modal-overlay" style="display: none"></div>
     </body>
     <script defer>
         const input = document.querySelector(".upload-files-input");
@@ -123,11 +153,43 @@
                 "flex";
         }
 
+        async function openShareModal(fileId, folderId, filename) {
+            overlay.style.display = "block";
+            const modal = document.querySelector(
+                `.share-modal[data-file-id="${fileId}"]`
+            );
+            modal.style.display = "flex";
+
+            modal.querySelector(".share-file-form").onsubmit = async (e) => {
+                e.preventDefault();
+                const duration = modal.querySelector(".duration-select").value;
+
+                const res = await fetch(`/share/${folderId}/${filename}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ duration }),
+                });
+
+                const data = await res.json();
+
+                if (data.url) {
+                    modal.querySelector(".share-link-textarea").value =
+                        data.url;
+                } else {
+                    modal.querySelector(".share-link-textarea").value =
+                        "Error creating link";
+                }
+            };
+        }
+
         function closeModals() {
             document.querySelector(".upload-files-modal").style.display =
                 "none";
             document.querySelector(".create-folder-modal").style.display =
                 "none";
+            document.querySelectorAll(".share-modal").forEach((modal) => {
+                modal.style.display = "none";
+            });
             overlay.style.display = "none";
         }
 

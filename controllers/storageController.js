@@ -25,6 +25,7 @@ async function uploadFiles(req, res, next) {
                 .upload(storagePath, file.buffer, { upsert: false });
             if (error) {
                 console.error("Supabase error:", error.message);
+                return res.status(500).json({ error: "Error uploading file" });
             }
 
             file.path = data.path;
@@ -99,11 +100,41 @@ async function deleteFile(req, res, next) {
             .remove([storagePath]);
         if (error) {
             console.error("Supabase error:", error.message);
+            return res.status(500).json({ error: "Error deleting file" });
         }
 
         // delete from database
         await db.deleteFile(filename);
         res.redirect(`/drive/${folderId}`);
+    } catch (err) {
+        next(err);
+    }
+}
+
+async function shareFile(req, res, next) {
+    try {
+        const { folderId, filename } = req.params;
+        const duration = Number(req.body.duration);
+
+        // get full path to file
+        const folderPath = await getFolderPath(folderId);
+        const storagePath = `${folderPath}/${filename}`;
+
+        const dbFile = await db.getFileByFilename(filename);
+
+        // get link from Supabase storage
+        const { data, error } = await supabase.storage
+            .from("files")
+            .createSignedUrl(storagePath, duration, {
+                download: dbFile.name,
+            });
+
+        if (error) {
+            console.error("Supabase error:", error.message);
+            return res.status(500).json({ error: "Error creating signed URL" });
+        }
+
+        return res.json({ url: data.signedUrl }); // send JSON back to page
     } catch (err) {
         next(err);
     }
@@ -129,5 +160,6 @@ module.exports = {
     uploadFiles,
     downloadFile,
     deleteFile,
+    shareFile,
     createFolder,
 };

@@ -144,7 +144,8 @@ input {
 }
 
 .upload-files-form,
-.create-folder-form {
+.create-folder-form,
+.share-file-form {
     border: 1px solid var(--accent);
     border-radius: 5px;
     padding: 1rem;
@@ -191,11 +192,19 @@ input {
     gap: 0.5rem;
 }
 
-.file-btn-container > a {
+.file-btn-container > a,
+.file-btn-container button {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
+}
+
+.file-btn-container > button {
+    border: none;
+    border-radius: 5px;
+    padding: 0;
+    cursor: pointer;
 }
 
 .file-btn-container img {
@@ -203,6 +212,26 @@ input {
     border-radius: 5px;
     background-color: var(--light-bg);
     height: 100%;
+    transition: all 0.2s;
+}
+
+.file-btn-container img:hover {
+    background-color: #6b96be;
+}
+
+.share-link-textarea {
+    width: 400px;
+    background-color: var(--dark-bg);
+    color: white;
+    border-radius: 5px;
+}
+
+.duration-select {
+    padding: 0.5rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--light-bg);
+    color: white;
 }
 
 .folders-container {
@@ -212,7 +241,7 @@ input {
 
 .folder,
 .add-folder-btn {
-    padding: 1rem;
+    padding: 0.8rem 1rem 0.8rem 1rem;
     background-color: var(--light-bg);
     border-radius: 5px;
     cursor: pointer;
@@ -249,7 +278,8 @@ input {
 }
 
 .upload-files-modal,
-.create-folder-modal {
+.create-folder-modal,
+.share-modal {
     position: absolute;
     top: 50%;
     left: 50%;

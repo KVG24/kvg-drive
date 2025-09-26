@@ -40,7 +40,8 @@ app.use(
 // Initiate passport
 app.use(passport.session());
 
-// Allow using routes
+// Parsing json and form data
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Router
