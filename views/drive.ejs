@@ -42,12 +42,39 @@
                 <% if (subfolders) { %>
                 <!-- comment to prevent linter ruining markup in VS Code -->
                 <% subfolders.forEach(function(subfolder) { %>
-                <div
-                    class="folder"
-                    onclick="window.location.href='/drive/<%= subfolder.id %>'"
-                >
+                <div class="folder" data-id="<%= subfolder.id %>">
                     <img src="/icons/folder.svg" />
                     <%= subfolder.name %>
+                    <button
+                        type="button"
+                        onclick="toggleConfirmDeleteModal()"
+                        class="delete-folder-btn"
+                    >
+                        <img src="/icons/delete.svg" />
+                    </button>
+                    <div
+                        class="confirm-delete-folder-modal"
+                        data-folder-id="<%= subfolder.id %>"
+                        style="display: none"
+                    >
+                        <p>
+                            Are you sure you want to delete <%= subfolder.name
+                            %> and all its contents?
+                        </p>
+                        <div class="confirm-delete-btns">
+                            <a
+                                class="confirm-delete-folder-btn"
+                                href="/delete/<%= subfolder.id %>"
+                                >DELETE!</a
+                            >
+                            <button
+                                onclick="toggleConfirmDeleteModal()"
+                                class="close-confirm-delete-btn"
+                            >
+                                NO!
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <% }) %> <% } %>
             </div>
@@ -178,6 +205,20 @@
                 "flex";
         }
 
+        function toggleConfirmDeleteModal() {
+            if (overlay.style.display == "none") {
+                overlay.style.display = "block";
+                document.querySelector(
+                    ".confirm-delete-folder-modal"
+                ).style.display = "flex";
+            } else {
+                overlay.style.display = "none";
+                document.querySelector(
+                    ".confirm-delete-folder-modal"
+                ).style.display = "none";
+            }
+        }
+
         async function openShareModal(fileId, folderId, filename) {
             overlay.style.display = "block";
             const modal = document.querySelector(
@@ -215,6 +256,11 @@
             document.querySelectorAll(".share-modal").forEach((modal) => {
                 modal.style.display = "none";
             });
+            document
+                .querySelectorAll(".confirm-delete-folder-modal")
+                .forEach((modal) => {
+                    modal.style.display = "none";
+                });
             overlay.style.display = "none";
         }
 
@@ -242,10 +288,19 @@
             });
         });
 
+        // enter folder on click
+        document.querySelectorAll(".folder").forEach((folder) => {
+            folder.addEventListener("click", (e) => {
+                // ignore clicks "delete folder" button
+                if (e.target.closest("button")) return;
+                window.location.href = `/drive/${folder.dataset.id}`;
+            });
+        });
+
         // Loader functionality
         const loader = document.querySelector(".loader-overlay");
         const buttons = document.querySelectorAll(
-            ".delete-btn, .upload-files-submit-btn, .create-folder-submit-btn"
+            ".delete-btn, .upload-files-submit-btn, .create-folder-submit-btn, .confirm-delete-folder-btn"
         );
 
         buttons.forEach((btn) => {

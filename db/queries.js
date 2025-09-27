@@ -101,12 +101,28 @@ async function deleteFile(filename) {
     });
 }
 
+async function deleteFilesInFolder(folderId) {
+    await prisma.file.deleteMany({
+        where: {
+            folderId,
+        },
+    });
+}
+
 async function createFolder(name, ownerId, parentId) {
     await prisma.folder.create({
         data: {
             name,
             ownerId,
             parentId,
+        },
+    });
+}
+
+async function deleteFolder(id) {
+    await prisma.folder.delete({
+        where: {
+            id,
         },
     });
 }
@@ -122,5 +138,7 @@ module.exports = {
     registerUser,
     uploadFile,
     deleteFile,
+    deleteFilesInFolder,
     createFolder,
+    deleteFolder,
 };

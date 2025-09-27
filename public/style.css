@@ -161,7 +161,6 @@ input {
 
 .folders-container {
     display: flex;
-    flex-direction: column;
     gap: 0.5rem;
 }
 
@@ -184,6 +183,54 @@ input {
     gap: 0.5rem;
     cursor: pointer;
     border: 1px solid var(--accent);
+}
+
+.delete-folder-btn {
+    border-radius: 5px;
+    border: none;
+    padding: 0.3rem 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    transition: all 0.3s;
+    background-color: var(--bg-middle);
+    cursor: pointer;
+}
+
+.delete-folder-btn:hover {
+    background-color: var(--bg-light);
+}
+
+.confirm-delete-folder-modal {
+    border-radius: 5px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.confirm-delete-btns {
+    display: flex;
+    gap: 1rem;
+}
+
+.confirm-delete-folder-btn,
+.close-confirm-delete-btn {
+    padding: 1rem;
+    background-color: rgb(138, 0, 0);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+}
+
+.close-confirm-delete-btn {
+    background-color: var(--accent);
+    color: black;
 }
 
 .add-folder-btn,
@@ -252,6 +299,7 @@ input {
 
 .file-btn-container > button {
     border: none;
+    background-color: var(--bg-dark);
     border-radius: 5px;
     padding: 0;
     cursor: pointer;
@@ -260,10 +308,9 @@ input {
 .file-btn-container img {
     padding: 0.5rem;
     border-radius: 5px;
-    background-color: var(--bg-middle);
+    background-color: var(--bg-dark);
     height: 100%;
     transition: all 0.2s;
-    border: 1px solid var(--accent);
 }
 
 .file-btn-container img:hover {
@@ -312,7 +359,8 @@ input {
 
 .upload-files-modal,
 .create-folder-modal,
-.share-modal {
+.share-modal,
+.confirm-delete-folder-modal {
     position: absolute;
     top: 50%;
     left: 50%;

@@ -95,7 +95,7 @@ async function deleteFile(req, res, next) {
         const storagePath = `${folderPath}/${filename}`;
 
         // delete from Supabase storage
-        const { data, error } = await supabase.storage
+        const { error } = await supabase.storage
             .from("files")
             .remove([storagePath]);
         if (error) {
@@ -156,10 +156,46 @@ async function createFolder(req, res, next) {
     }
 }
 
+async function deleteFolder(req, res, next) {
+    try {
+        const targetFolderId = parseInt(req.params.folderId, 10);
+        const targetFolderInDb = await db.getFolderById(targetFolderId);
+        const filesInTargetFolder = await db.getFilesInFolder(targetFolderId);
+        const folderPath = await getFolderPath(targetFolderId);
+
+        if (filesInTargetFolder.length > 0) {
+            // get all storage paths
+            const storagePaths = filesInTargetFolder.map(
+                (file) => `${folderPath}/${file.filename}`
+            );
+
+            // delete all files in target folder in Supabase storage
+            const { error } = await supabase.storage
+                .from("files")
+                .remove(storagePaths);
+            if (error) {
+                console.error("Supabase error:", error.message);
+                return res
+                    .status(500)
+                    .json({ error: "Error deleting files in folder" });
+            }
+
+            await db.deleteFilesInFolder(targetFolderId);
+        }
+
+        await db.deleteFolder(targetFolderId);
+
+        res.redirect(`/drive/${targetFolderInDb.parentId}`);
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     uploadFiles,
     downloadFile,
     deleteFile,
     shareFile,
     createFolder,
+    deleteFolder,
 };
