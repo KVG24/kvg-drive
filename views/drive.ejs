@@ -11,26 +11,18 @@
 
         <h1><%= user.username %> drive</h1>
         <div class="files-container">
-            <div class="folders-container">
+            <% if (folderPath) { %>
+            <div class="folder-path">/<%= folderPath %></div>
+            <% } %>
+            <div class="control-btns">
                 <% if (folder.id !== user.rootFolderId && parentFolder) { %>
                 <div
-                    class="folder back-to-parent"
+                    class="back-to-parent-btn"
                     onclick="window.location.href='/drive/<%= parentFolder.id %>'"
                 >
                     <img src="/icons/back.svg" alt="folder icon" />
-                    <%= parentFolder.name %>
                 </div>
-                <% } %> <% if (subfolders) { %>
-                <!-- comment to prevent linter ruining markup in VS Code -->
-                <% subfolders.forEach(function(subfolder) { %>
-                <div
-                    class="folder"
-                    onclick="window.location.href='/drive/<%= subfolder.id %>'"
-                >
-                    <img src="/icons/folder.svg" />
-                    <%= subfolder.name %>
-                </div>
-                <% }) %> <% } %>
+                <% } %>
                 <button
                     class="add-folder-btn"
                     type="button"
@@ -45,6 +37,19 @@
                 >
                     Upload files
                 </button>
+            </div>
+            <div class="folders-container">
+                <% if (subfolders) { %>
+                <!-- comment to prevent linter ruining markup in VS Code -->
+                <% subfolders.forEach(function(subfolder) { %>
+                <div
+                    class="folder"
+                    onclick="window.location.href='/drive/<%= subfolder.id %>'"
+                >
+                    <img src="/icons/folder.svg" />
+                    <%= subfolder.name %>
+                </div>
+                <% }) %> <% } %>
             </div>
             <% if (files) {%> <% files.forEach((file) => { %>
             <div class="file">

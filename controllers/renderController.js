@@ -1,4 +1,5 @@
 const db = require("../db/queries");
+const { getFolderPath } = require("../utils/getFolderPath");
 
 async function renderIndex(req, res) {
     if (req.user) {
@@ -44,12 +45,16 @@ async function renderDrive(req, res) {
 
         file.uploaded = formattedTime;
     }
+
+    const folderPath = await getFolderPath(req.params.folderId);
+
     res.render("drive", {
         user: req.user,
         folder,
         files,
         subfolders,
         parentFolder,
+        folderPath,
     });
 }
 
