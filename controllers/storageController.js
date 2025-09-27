@@ -160,35 +160,47 @@ async function deleteFolder(req, res, next) {
     try {
         const targetFolderId = parseInt(req.params.folderId, 10);
         const targetFolderInDb = await db.getFolderById(targetFolderId);
-        const filesInTargetFolder = await db.getFilesInFolder(targetFolderId);
-        const folderPath = await getFolderPath(targetFolderId);
 
-        if (filesInTargetFolder.length > 0) {
-            // get all storage paths
-            const storagePaths = filesInTargetFolder.map(
-                (file) => `${folderPath}/${file.filename}`
-            );
-
-            // delete all files in target folder in Supabase storage
-            const { error } = await supabase.storage
-                .from("files")
-                .remove(storagePaths);
-            if (error) {
-                console.error("Supabase error:", error.message);
-                return res
-                    .status(500)
-                    .json({ error: "Error deleting files in folder" });
-            }
-
-            await db.deleteFilesInFolder(targetFolderId);
-        }
-
-        await db.deleteFolder(targetFolderId);
+        // Recursively delete all subfolders
+        await deleteFolderRecursive(targetFolderId);
 
         res.redirect(`/drive/${targetFolderInDb.parentId}`);
     } catch (err) {
         next(err);
     }
+}
+
+// Helper function for folder deletion with subfolders
+async function deleteFolderRecursive(folderId) {
+    const filesInTargetFolder = await db.getFilesInFolder(folderId);
+    const folderPath = await getFolderPath(folderId);
+
+    if (filesInTargetFolder.length > 0) {
+        // put all storage files paths in array
+        const storagePaths = filesInTargetFolder.map(
+            (file) => `${folderPath}/${file.filename}`
+        );
+
+        // delete all files in target folder in Supabase storage
+        const { error } = await supabase.storage
+            .from("files")
+            .remove(storagePaths);
+        if (error) {
+            console.error("Supabase error:", error.message);
+            return res
+                .status(500)
+                .json({ error: "Error deleting files in folder" });
+        }
+
+        await db.deleteFilesInFolder(folderId);
+    }
+
+    const subfolders = await db.getSubfolders(folderId);
+    for (const subfolder of subfolders) {
+        await deleteFolderRecursive(subfolder.id);
+    }
+
+    await db.deleteFolder(folderId);
 }
 
 module.exports = {
