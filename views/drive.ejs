@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/style.css" />
+        <script src="/main.js" defer></script>
         <title><%= user.username %> drive</title>
     </head>
     <body>
@@ -47,34 +48,12 @@
                     <%= subfolder.name %>
                     <button
                         type="button"
-                        onclick="toggleConfirmDeleteModal()"
+                        onclick="toggleConfirmDeleteModal('<%= subfolder.id %>')"
                         class="delete-folder-btn"
                     >
                         <img src="/icons/delete.svg" />
                     </button>
-                    <div
-                        class="confirm-delete-folder-modal"
-                        data-folder-id="<%= subfolder.id %>"
-                        style="display: none"
-                    >
-                        <p>
-                            Are you sure you want to delete <%= subfolder.name
-                            %> and all its contents?
-                        </p>
-                        <div class="confirm-delete-btns">
-                            <a
-                                class="confirm-delete-folder-btn"
-                                href="/delete/<%= subfolder.id %>"
-                                >DELETE!</a
-                            >
-                            <button
-                                onclick="toggleConfirmDeleteModal()"
-                                class="close-confirm-delete-btn"
-                            >
-                                NO!
-                            </button>
-                        </div>
-                    </div>
+                    <%- include('partials/confirmDeleteModal', { subfolder }) %>
                 </div>
                 <% }) %> <% } %>
             </div>
@@ -99,214 +78,15 @@
                         ><img src="/icons/delete.svg"
                     /></a>
                 </div>
-                <div
-                    class="share-modal"
-                    data-file-id="<%= file.id %>"
-                    style="display: none"
-                >
-                    <form class="share-file-form">
-                        <textarea
-                            name="shareLink"
-                            class="share-link-textarea"
-                            rows="15"
-                            id="share-text-<%= file.id %>"
-                            placeholder="Select duration for link availability and click 'Get Link'"
-                            readonly
-                        ></textarea>
-                        <select name="duration" class="duration-select">
-                            <option value="3600" selected>1 Hour</option>
-                            <option value="43200">12 Hours</option>
-                            <option value="86400">1 Day</option>
-                        </select>
-                        <div class="share-file-btn-container">
-                            <button type="submit" class="submit-btn">
-                                Get link
-                            </button>
-                            <button
-                                type="button"
-                                class="submit-btn copy-btn"
-                                data-file-id="<%= file.id %>"
-                            >
-                                Copy link
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                <%- include('partials/shareFileModal', { file }) %>
             </div>
             <% }) %> <% } %>
         </div>
-        <div class="upload-files-modal" style="display: none">
-            <form
-                action="<%= folder ? '/upload-files/' + folder.id : '/upload-files' %>"
-                class="upload-files-form"
-                method="post"
-                enctype="multipart/form-data"
-            >
-                <input
-                    type="file"
-                    name="files"
-                    class="upload-files-input"
-                    multiple
-                />
-                <button
-                    class="submit-btn upload-files-submit-btn"
-                    type="submit"
-                    disabled
-                >
-                    Upload
-                </button>
-            </form>
-        </div>
-        <div class="create-folder-modal" style="display: none">
-            <form
-                action="<%= folder ? '/create-folder/' + folder.id : '/create-folder' %>"
-                method="post"
-                class="create-folder-form"
-            >
-                <input
-                    type="text"
-                    name="createFolderName"
-                    class="create-folder-input"
-                    placeholder="Folder Name"
-                    required
-                />
-                <button
-                    class="submit-btn create-folder-submit-btn"
-                    type="submit"
-                >
-                    Create folder
-                </button>
-            </form>
-        </div>
+        <%- include('partials/uploadFilesModal', { folder }) %> <%-
+        include('partials/createFolderModal', { folder }) %>
         <div class="modal-overlay" style="display: none"></div>
         <div class="loader-overlay" style="display: none">
             <div class="loader"></div>
         </div>
     </body>
-    <script defer>
-        const input = document.querySelector(".upload-files-input");
-        const btn = document.querySelector(".upload-files-submit-btn");
-
-        input.addEventListener("change", () => {
-            btn.disabled = input.files.length === 0;
-        });
-
-        const overlay = document.querySelector(".modal-overlay");
-
-        function openUploadFilesModal() {
-            overlay.style.display = "block";
-            document.querySelector(".upload-files-modal").style.display =
-                "flex";
-        }
-
-        function openCreateFolderModal() {
-            overlay.style.display = "block";
-            document.querySelector(".create-folder-modal").style.display =
-                "flex";
-        }
-
-        function toggleConfirmDeleteModal() {
-            if (overlay.style.display == "none") {
-                overlay.style.display = "block";
-                document.querySelector(
-                    ".confirm-delete-folder-modal"
-                ).style.display = "flex";
-            } else {
-                overlay.style.display = "none";
-                document.querySelector(
-                    ".confirm-delete-folder-modal"
-                ).style.display = "none";
-            }
-        }
-
-        async function openShareModal(fileId, folderId, filename) {
-            overlay.style.display = "block";
-            const modal = document.querySelector(
-                `.share-modal[data-file-id="${fileId}"]`
-            );
-            modal.style.display = "flex";
-
-            modal.querySelector(".share-file-form").onsubmit = async (e) => {
-                e.preventDefault();
-                const duration = modal.querySelector(".duration-select").value;
-
-                const res = await fetch(`/share/${folderId}/${filename}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ duration }),
-                });
-
-                const data = await res.json();
-
-                if (data.url) {
-                    modal.querySelector(".share-link-textarea").value =
-                        data.url;
-                } else {
-                    modal.querySelector(".share-link-textarea").value =
-                        "Error creating link";
-                }
-            };
-        }
-
-        function closeModals() {
-            document.querySelector(".upload-files-modal").style.display =
-                "none";
-            document.querySelector(".create-folder-modal").style.display =
-                "none";
-            document.querySelectorAll(".share-modal").forEach((modal) => {
-                modal.style.display = "none";
-            });
-            document
-                .querySelectorAll(".confirm-delete-folder-modal")
-                .forEach((modal) => {
-                    modal.style.display = "none";
-                });
-            overlay.style.display = "none";
-        }
-
-        overlay.addEventListener("click", closeModals);
-
-        // "Copy link" button functionality
-        document.querySelectorAll(".copy-btn").forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const fileId = btn.dataset.fileId;
-                const textarea = document.getElementById(
-                    `share-text-${fileId}`
-                );
-                if (!textarea) return;
-
-                navigator.clipboard
-                    .writeText(textarea.value)
-                    .then(() => {
-                        const originalText = btn.textContent;
-                        btn.textContent = "Copied!";
-                        setTimeout(() => {
-                            btn.textContent = originalText;
-                        }, 2000);
-                    })
-                    .catch((err) => console.error(err));
-            });
-        });
-
-        // enter folder on click
-        document.querySelectorAll(".folder").forEach((folder) => {
-            folder.addEventListener("click", (e) => {
-                // ignore clicks "delete folder" button
-                if (e.target.closest("button")) return;
-                window.location.href = `/drive/${folder.dataset.id}`;
-            });
-        });
-
-        // Loader functionality
-        const loader = document.querySelector(".loader-overlay");
-        const buttons = document.querySelectorAll(
-            ".delete-btn, .upload-files-submit-btn, .create-folder-submit-btn, .confirm-delete-folder-btn"
-        );
-
-        buttons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                loader.style.display = "flex";
-            });
-        });
-    </script>
 </html>

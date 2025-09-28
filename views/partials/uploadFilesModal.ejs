@@ -1,0 +1,17 @@
+<div class="upload-files-modal" style="display: none">
+    <form
+        action="<%= folder ? '/upload-files/' + folder.id : '/upload-files' %>"
+        class="upload-files-form"
+        method="post"
+        enctype="multipart/form-data"
+    >
+        <input type="file" name="files" class="upload-files-input" multiple />
+        <button
+            class="submit-btn upload-files-submit-btn"
+            type="submit"
+            disabled
+        >
+            Upload
+        </button>
+    </form>
+</div>

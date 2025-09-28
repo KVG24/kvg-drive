@@ -1,0 +1,27 @@
+<div class="share-modal" data-file-id="<%= file.id %>" style="display: none">
+    <form class="share-file-form">
+        <textarea
+            name="shareLink"
+            class="share-link-textarea"
+            rows="15"
+            id="share-text-<%= file.id %>"
+            placeholder="Select duration for link availability and click 'Get Link'"
+            readonly
+        ></textarea>
+        <select name="duration" class="duration-select">
+            <option value="3600" selected>1 Hour</option>
+            <option value="43200">12 Hours</option>
+            <option value="86400">1 Day</option>
+        </select>
+        <div class="share-file-btn-container">
+            <button type="submit" class="submit-btn">Get link</button>
+            <button
+                type="button"
+                class="submit-btn copy-btn"
+                data-file-id="<%= file.id %>"
+            >
+                Copy link
+            </button>
+        </div>
+    </form>
+</div>

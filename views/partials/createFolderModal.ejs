@@ -1,0 +1,18 @@
+<div class="create-folder-modal" style="display: none">
+    <form
+        action="<%= folder ? '/create-folder/' + folder.id : '/create-folder' %>"
+        method="post"
+        class="create-folder-form"
+    >
+        <input
+            type="text"
+            name="createFolderName"
+            class="create-folder-input"
+            placeholder="Folder Name"
+            required
+        />
+        <button class="submit-btn create-folder-submit-btn" type="submit">
+            Create folder
+        </button>
+    </form>
+</div>

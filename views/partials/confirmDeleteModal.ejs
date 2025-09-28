@@ -1,0 +1,21 @@
+<div
+    class="confirm-delete-folder-modal"
+    data-folder-id="<%= subfolder.id %>"
+    style="display: none"
+>
+    <p>
+        Are you sure you want to delete <%= subfolder.name %> and all its
+        contents?
+    </p>
+    <div class="confirm-delete-btns">
+        <a class="confirm-delete-folder-btn" href="/delete/<%= subfolder.id %>"
+            >DELETE!</a
+        >
+        <button
+            onclick="toggleConfirmDeleteModal('<%= subfolder.id %>')"
+            class="close-confirm-delete-btn"
+        >
+            NO!
+        </button>
+    </div>
+</div>
