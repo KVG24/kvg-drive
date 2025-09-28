@@ -60,7 +60,10 @@
             <% if (files) {%> <% files.forEach((file) => { %>
             <div class="file">
                 <div class="file-name"><%= file.name %></div>
-                <div class="file-size"><%= file.size / 1000 %> KB</div>
+                <div class="file-size">
+                    <%= file.size >= 1000000 ? (file.size / 1000000).toFixed(2)
+                    + " MB" : (file.size / 1000).toFixed(2) + " KB" %>
+                </div>
                 <div class="file-uploaded"><%= file.uploaded %></div>
                 <div class="file-btn-container">
                     <button
