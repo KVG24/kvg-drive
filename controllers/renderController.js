@@ -24,6 +24,10 @@ function renderLogIn(req, res) {
 }
 
 async function renderDrive(req, res) {
+    if (!req.user) {
+        res.redirect("/log-in");
+    }
+
     let folder = null;
     let files = [];
     let subfolders = [];
